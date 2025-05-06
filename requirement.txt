@@ -1,0 +1,13 @@
+fastapi 
+face_recognition
+pillow
+uvicorn
+python-multipart
+sqlalchemy
+react-webcam axios
+aiosqlite
+cmake
+
+opencv-python
+numpy
+
