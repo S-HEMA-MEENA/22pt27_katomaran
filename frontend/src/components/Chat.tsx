@@ -56,14 +56,9 @@ const Chat = () => {
         {" "}The Chat Interface
       </h1>
       <div className="flex flex-col h-[80%] w-full overflow-auto scroll-auto">
-        <MyCard message={"This is a sample message" } />
-        <AICard message={"Oh That was a sample message. Here is what a brief description is all about. How would a sample message be an actual message, if actual message was a sample message." }/>
-        <MyCard message={"This is a sample message" } />
-        <AICard message={"Oh That was a sample message. Here is what a brief description is all about. How would a sample message be an actual message, if actual message was a sample message." }/>
-        <MyCard message={"This is a sample message" } />
-        <AICard message={"Oh That was a sample message. Here is what a brief description is all about. How would a sample message be an actual message, if actual message was a sample message." }/>
-        <MyCard message={"This is a sample message" } />
-        <AICard message={"Oh That was a sample message. Here is what a brief description is all about. How would a sample message be an actual message, if actual message was a sample message." }/>
+        {messages.map((value,key) => {
+          return key % 2 == 0 ? <MyCard message={value}/> : <AICard message={value}/>
+        })}
       </div>
       <div className="flex flex-row w-full h-[15%] p-5 gap-5 ">
         <textarea ref={textRef} className="border rounded-2xl w-full h-full py-3 px-4 font-semibold resize-none" rows={3} placeholder="Write a prompt" onChange={e => setCurrent(e.target.value ? e.target.value : null)}/>

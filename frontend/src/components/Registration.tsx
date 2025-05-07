@@ -1,4 +1,5 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState } 
+from "react";
 import Webcam from "react-webcam";
 
 const videoConstraints = {
