@@ -35,6 +35,10 @@ class RecognizeRequest(BaseModel):
     image: str
     known_faces: List[dict]
 
+class LogRegistrationRequest(BaseModel):
+    name: str
+    timestamp: str
+
 @app.post("/register/")
 async def register_face(
     name: str = Form(...),
@@ -132,3 +136,27 @@ async def recognize_faces(request: RecognizeRequest, db: Session = Depends(get_d
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/log_registration/")
+async def log_registration(request: LogRegistrationRequest):
+    try:
+        # Define log file path in the instance directory
+        log_file_path = os.path.join(os.path.dirname(__file__), '..', 'instance', 'registration_log.txt')
+        
+        # Format timestamp from ISO string to YYYY-MM-DD HH:MM:SS
+        timestamp = datetime.fromisoformat(request.timestamp.replace('Z', '+00:00'))
+        formatted_timestamp = timestamp.strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Log entry
+        log_entry = f"Registered {request.name} at {formatted_timestamp}\n"
+        
+        # Append to log file (thread-safe)
+        with open(log_file_path, 'a', encoding='utf-8') as f:
+            f.write(log_entry)
+        
+        return {
+            "status": "success",
+            "message": "Registration logged successfully"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to log registration: {str(e)}")
