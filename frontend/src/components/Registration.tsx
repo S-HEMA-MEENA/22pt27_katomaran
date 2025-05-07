@@ -1,5 +1,4 @@
-import { useCallback, useRef, useState } 
-from "react";
+import { useCallback, useRef, useState } from "react";
 import Webcam from "react-webcam";
 
 const videoConstraints = {
@@ -10,10 +9,10 @@ const videoConstraints = {
 
 const Registration = () => {
   const webcamRef = useRef<Webcam|null>(null);
-  const [name,setName] = useState<string|null>();
-  const [captured, setCaptured] = useState<string|null>();
-  const [notCaptured,setNotCaptured] = useState<boolean>(false);
-  
+  const [name, setName] = useState<string|null>(null);
+  const [captured, setCaptured] = useState<string|null>(null);
+  const [notCaptured, setNotCaptured] = useState<boolean>(false);
+
   const capture = useCallback(
     async () => {
       if (!webcamRef.current) return;
@@ -22,47 +21,63 @@ const Registration = () => {
         return;
       }
       setNotCaptured(false);
-  
+
       const imageSrc = webcamRef.current.getScreenshot();
       setCaptured(imageSrc);
-  
+
       if (imageSrc && name) {
         const img = new Image();
         img.src = imageSrc;
-  
+
         img.onload = async () => {
           const canvas = document.createElement('canvas');
           canvas.width = img.width;
           canvas.height = img.height;
-  
+
           const ctx = canvas.getContext('2d');
           if (!ctx) {
             console.error("Could not get 2D context from canvas.");
             return;
           }
-  
+
           ctx.drawImage(img, 0, 0);
-  
+
           canvas.toBlob(async (blob) => {
             if (!blob) {
               console.error("Failed to convert canvas to blob.");
               return;
             }
-  
+
             const formData = new FormData();
             formData.append("name", name);
             formData.append("file", blob, "face.jpg");
-  
+
             try {
-              const response = await fetch("http://localhost:8000/register/", {
+              // Register face
+              const registerResponse = await fetch("http://localhost:8000/register/", {
                 method: "POST",
                 body: formData,
               });
-  
-              const result = await response.json();
-              console.log(result);
+
+              const registerResult = await registerResponse.json();
+              console.log("Registration response:", registerResult);
+
+              // Log registration event
+              const logResponse = await fetch("http://localhost:8000/log_registration/", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  name,
+                  timestamp: new Date().toISOString(),
+                }),
+              });
+
+              const logResult = await logResponse.json();
+              console.log("Log response:", logResult);
             } catch (error) {
-              console.error("Registration failed", error);
+              console.error("Registration or logging failed", error);
             }
           }, 'image/jpeg');
         };
@@ -107,7 +122,7 @@ const Registration = () => {
           <img src={captured} className="border rounded-xl" />
         </div>
         <div className="flex flex-col font-semibold items-center justify-center w-1/2">
-          <p className="text-lg *:">Your Registered name is</p>
+          <p className="text-lg">Your Registered name is</p>
           <h1 className="text-3xl text-blue-600">{name}</h1>
         </div>
       </div>}
