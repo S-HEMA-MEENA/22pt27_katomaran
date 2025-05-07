@@ -47,6 +47,16 @@ const LiveStream = () => {
       const imageSrc = webcamRef.current.getScreenshot();
       if (!imageSrc) return;
 
+      // Load the screenshot image to get its dimensions
+      const img = new Image();
+      img.src = imageSrc;
+      await new Promise((resolve) => {
+        img.onload = resolve;
+      });
+
+      const screenshotWidth = img.width;
+      const screenshotHeight = img.height;
+
       const response = await fetch("http://localhost:8000/recognize/", {
         method: "POST",
         headers: {
@@ -89,22 +99,39 @@ const LiveStream = () => {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
 
+        // Calculate scaling factors
+        const scaleX = canvas.width / screenshotWidth;
+        const scaleY = canvas.height / screenshotHeight;
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         result.detected_faces.forEach((face: any) => {
           const { top, right, bottom, left } = face.location;
           const confidencePercent = Math.round(face.confidence * 100);
-          
+
+          // Scale coordinates
+          const scaledLeft = left * scaleX;
+          const scaledTop = top * scaleY;
+          const scaledRight = right * scaleX;
+          const scaledBottom = bottom * scaleY;
+
+          // Add padding after scaling
+          const padding = 10;
+          const adjustedLeft = scaledLeft - padding;
+          const adjustedTop = scaledTop - padding;
+          const adjustedWidth = (scaledRight - scaledLeft) + 2 * padding;
+          const adjustedHeight = (scaledBottom - scaledTop) + 2 * padding;
+
           // Draw bounding box
           ctx.strokeStyle = face.name ? "#00FF00" : "#FF0000";
           ctx.lineWidth = 2;
-          ctx.strokeRect(left, top, right - left, bottom - top);
+          ctx.strokeRect(adjustedLeft, adjustedTop, adjustedWidth, adjustedHeight);
           
           // Draw name and confidence
           ctx.fillStyle = face.name ? "#00FF00" : "#FF0000";
           ctx.font = "16px Arial";
           const label = face.name ? `${face.name} (${confidencePercent}%)` : `Unknown (${confidencePercent}%)`;
-          ctx.fillText(label, left, top > 20 ? top - 5 : top + 20);
+          ctx.fillText(label, adjustedLeft, adjustedTop > 20 ? adjustedTop - 5 : adjustedTop + 20);
         });
       }
     } catch (error) {
