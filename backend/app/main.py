@@ -6,8 +6,13 @@ from .face_recognition import process_face_image
 from sqlalchemy.orm import Session
 from datetime import datetime
 import os
-
-Base.metadata.create_all(bind=engine)
+from typing import List
+from pydantic import BaseModel
+import face_recognition
+import numpy as np
+import base64
+import io
+from PIL import Image
 
 app = FastAPI()
 
@@ -25,6 +30,10 @@ def get_db():
         yield db
     finally:
         db.close()
+
+class RecognizeRequest(BaseModel):
+    image: str
+    known_faces: List[dict]
 
 @app.post("/register/")
 async def register_face(
@@ -75,8 +84,51 @@ async def get_registered_faces(db: Session = Depends(get_db)):
             {
                 "id": face.id,
                 "name": face.name,
+                "face_encoding": face.face_encoding,
                 "registered_at": face.registered_at.isoformat()
             }
             for face in faces
         ]
     }
+
+@app.post("/recognize/")
+async def recognize_faces(request: RecognizeRequest, db: Session = Depends(get_db)):
+    try:
+        image_bytes = base64.b64decode(request.image)
+        image = Image.open(io.BytesIO(image_bytes))
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+        image_np = np.array(image)
+
+        face_locations = face_recognition.face_locations(image_np)
+        face_encodings = face_recognition.face_encodings(image_np, face_locations)
+
+        detected_faces = []
+        for (top, right, bottom, left), encoding in zip(face_locations, face_encodings):
+            face_data = {
+                "location": {"top": top, "right": right, "bottom": bottom, "left": left},
+                "name": None,
+                "confidence": 0.0
+            }
+
+            known_encodings = [np.array(face["encoding"]) for face in request.known_faces]
+            known_names = [face["name"] for face in request.known_faces]
+            
+            if known_encodings:
+                distances = face_recognition.face_distance(known_encodings, encoding)
+                min_distance = min(distances) if distances.size > 0 else 1.0
+                confidence = 1.0 - min_distance 
+                
+                if min_distance < 0.6:
+                    best_match_index = np.argmin(distances)
+                    face_data["name"] = known_names[best_match_index]
+                    face_data["confidence"] = float(confidence)
+
+            detected_faces.append(face_data)
+
+        return {
+            "status": "success",
+            "detected_faces": detected_faces
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
