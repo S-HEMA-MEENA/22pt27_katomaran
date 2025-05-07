@@ -12,40 +12,63 @@ const Registration = () => {
   const [name,setName] = useState<string|null>();
   const [captured, setCaptured] = useState<string|null>();
   const [notCaptured,setNotCaptured] = useState<boolean>(false);
-
+  
   const capture = useCallback(
     async () => {
-      if (!webcamRef || !webcamRef.current) return;
+      if (!webcamRef.current) return;
       if (!name) {
         setNotCaptured(true);
         return;
       }
       setNotCaptured(false);
   
-      const image = webcamRef.current.getScreenshot();
-      setCaptured(image);
+      const imageSrc = webcamRef.current.getScreenshot();
+      setCaptured(imageSrc);
   
-      if (image && name) {
-        const blob = await fetch(image).then((res) => res.blob());
-        const formData = new FormData();
-        formData.append("name", name);
-        formData.append("file", blob, "face.jpg");
+      if (imageSrc && name) {
+        const img = new Image();
+        img.src = imageSrc;
   
-        try {
-          const response = await fetch("http://localhost:8000/register/", {
-            method: "POST",
-            body: formData,
-          });
+        img.onload = async () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
   
-          const result = await response.json();
-          console.log(result); // or set success message here
-        } catch (error) {
-          console.error("Registration failed", error);
-        }
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            console.error("Could not get 2D context from canvas.");
+            return;
+          }
+  
+          ctx.drawImage(img, 0, 0);
+  
+          canvas.toBlob(async (blob) => {
+            if (!blob) {
+              console.error("Failed to convert canvas to blob.");
+              return;
+            }
+  
+            const formData = new FormData();
+            formData.append("name", name);
+            formData.append("file", blob, "face.jpg");
+  
+            try {
+              const response = await fetch("http://localhost:8000/register/", {
+                method: "POST",
+                body: formData,
+              });
+  
+              const result = await response.json();
+              console.log(result);
+            } catch (error) {
+              console.error("Registration failed", error);
+            }
+          }, 'image/jpeg');
+        };
       }
     },
-    [webcamRef, name] // ✅ also add `name` to dependency array
-  );  
+    [webcamRef, name]
+  );
 
   return (
     <div className="flex flex-col items-center justify-center p-10 gap-5">
@@ -56,7 +79,7 @@ const Registration = () => {
       <div className="flex flex-col w-1/2 gap-5">
         <Webcam
           audio={false}
-          height={70}
+          height={720}
           ref={webcamRef}
           screenshotFormat="image/jpeg"
           width={1280}
