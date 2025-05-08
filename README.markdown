@@ -20,7 +20,7 @@ A browser-based platform for face registration and real-time recognition, featur
   - Built with React, TypeScript, and Vite for a modern, user-friendly interface.
   - Components: Home, Register, Live Stream, Chat.
 - **Scalable Backend**:
-  - FastAPI for high-performance REST APIs and WebSocket endpoints.
+  - FastAPI for high-performance .
   - SQLite for lightweight, efficient storage.
 
 ## API Reference
@@ -253,4 +253,4 @@ face-recognition-platform/
 
 ## Acknowledgment
 
-This project is a part of a hackathon run by http://catomaran.com.
+“This project is a part of a hackathon run by https://katomaran.com ”
