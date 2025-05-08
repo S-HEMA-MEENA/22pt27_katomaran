@@ -216,26 +216,40 @@ WS /ws/chat
 ```
 face-recognition-platform/
 ├── backend/
-    ├── app
-           ├── main.py              # FastAPI app with API and WebSocket endpoints
-           ├── 
-│   ├── requirements.txt     # Backend dependencies
-│   ├── faces.db            # SQLite database
-│   ├── registration.log     # Event logs for RAG
-│   └── .env                # Environment variables (OpenAI API key)
+│   ├── app/
+│   ├── instance/
+│   ├── venv/
+│   ├── .env
+│   └── requirements.txt
+│
 ├── frontend/
+│   ├── node_modules/
+│   ├── public/
 │   ├── src/
+│   │   ├── assets/
 │   │   ├── components/
-│   │   │   ├── Home.tsx    # Home page
-│   │   │   ├── Register.tsx # Face registration component
-│   │   │   ├── LiveStream.tsx # Live recognition component
-│   │   │   └── Chat.tsx    # RAG chat widget
-│   │   ├── App.tsx         # Main app component
-│   │   └── main.tsx        # Entry point
-│   ├── package.json        # Frontend dependencies
-│   └── tsconfig.json       # TypeScript configuration
-├── README.md               # Project documentation
-└── architecture.png        # System architecture diagram
+│   │   │   ├── Chat.tsx
+│   │   │   ├── Home.tsx
+│   │   │   ├── LiveStream.tsx
+│   │   │   └── Registration.tsx
+│   │   ├── App.tsx
+│   │   ├── main.tsx
+│   │   ├── index.css
+│   │   └── App.css
+│   ├── index.html
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── vite.config.ts
+│
+├── output/
+│   ├── architecture diagram.pdf
+│   ├── Katomaran Hackathon May 2025.pdf
+│   ├── output_vedio_with_explanation.mp4
+│   ├── output_vedio.mp4
+│   └── report.docx
+│
+├── README.md
+└── .gitignore
 ```
 
 ## Future Enhancements
