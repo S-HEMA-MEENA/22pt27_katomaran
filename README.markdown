@@ -166,7 +166,7 @@ WS /ws/chat
 ### Prerequisites
 - Python 3.8+
 - Node.js 16+
--Grok API key (for RAG)
+- Grok API key (for RAG)
 - Webcam for face capture and streaming
 
 ### Setup
