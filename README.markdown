@@ -48,7 +48,7 @@ POST /api/register
   "message": "Face registered successfully",
   "data": {
     "id": 1,
-    "name": "Karthik",
+    "name": "hema",
     "timestamp": "2025-05-08T10:00:00Z"
   }
 }
@@ -254,7 +254,6 @@ face-recognition-platform/
 
 ## Future Enhancements
 
-- **Image Search**: Add an API (`POST /api/search/image`) to search for faces by uploading an image and comparing encodings.
 - **Advanced RAG Queries**: Support complex queries  with enhanced FAISS indexing.
 - **UI Improvements**: Add animations, dark mode, and accessibility features for a polished user experience.
 - **Performance Optimization**: Increase frame rate for live recognition on high-end devices and optimize FAISS for larger datasets.
