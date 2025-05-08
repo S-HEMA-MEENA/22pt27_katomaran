@@ -2,7 +2,7 @@
 
 A browser-based platform for face registration and real-time recognition, featuring a chat interface powered by Retrieval-Augmented Generation (RAG) to answer queries about registration activities. Built for the Katomaran Hackathon May 2025, this project combines face recognition, multi-face detection, and AI-driven query processing.
 
-##DEMO VEDIO
+## DEMO VIDEO
 
 
 ## Features
