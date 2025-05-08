@@ -75,12 +75,12 @@ GET /api/faces
   "data": [
     {
       "id": 1,
-      "name": "Karthik",
+      "name": "Hema",
       "timestamp": "2025-05-08T10:00:00Z"
     },
     {
       "id": 2,
-      "name": "Alice",
+      "name": "meena",
       "timestamp": "2025-05-08T10:05:00Z"
     }
   ]
@@ -130,7 +130,7 @@ WS /ws/recognize
   "status": "success",
   "faces": [
     {
-      "name": "Karthik",
+      "name": "hema",
       "bounding_box": {
         "top": 100,
         "right": 300,
@@ -258,7 +258,6 @@ face-recognition-platform/
 - **Advanced RAG Queries**: Support complex queries  with enhanced FAISS indexing.
 - **UI Improvements**: Add animations, dark mode, and accessibility features for a polished user experience.
 - **Performance Optimization**: Increase frame rate for live recognition on high-end devices and optimize FAISS for larger datasets.
-- **Multi-User Support**: Scale the backend to handle concurrent users with session management.
 
 ## Assumptions
 
