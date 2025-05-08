@@ -2,6 +2,9 @@
 
 A browser-based platform for face registration and real-time recognition, featuring a chat interface powered by Retrieval-Augmented Generation (RAG) to answer queries about registration activities. Built for the Katomaran Hackathon May 2025, this project combines face recognition, multi-face detection, and AI-driven query processing.
 
+##DEMO VEDIO
+
+
 ## Features
 
 - **Face Registration**:
@@ -186,7 +189,7 @@ WS /ws/chat
    ```
    - Create a `.env` file in `backend/`:
      ```env
-     OPENAI_API_KEY=your-openai-api-key
+     GROK_API_KEY=your-grok-api-key
      ```
    - Run the FastAPI server:
      ```bash
@@ -213,7 +216,9 @@ WS /ws/chat
 ```
 face-recognition-platform/
 ├── backend/
-│   ├── main.py              # FastAPI app with API and WebSocket endpoints
+    ├── app
+           ├── main.py              # FastAPI app with API and WebSocket endpoints
+           ├── 
 │   ├── requirements.txt     # Backend dependencies
 │   ├── faces.db            # SQLite database
 │   ├── registration.log     # Event logs for RAG
@@ -236,7 +241,7 @@ face-recognition-platform/
 ## Future Enhancements
 
 - **Image Search**: Add an API (`POST /api/search/image`) to search for faces by uploading an image and comparing encodings.
-- **Advanced RAG Queries**: Support complex queries like "List all registrations today" with enhanced FAISS indexing.
+- **Advanced RAG Queries**: Support complex queries  with enhanced FAISS indexing.
 - **UI Improvements**: Add animations, dark mode, and accessibility features for a polished user experience.
 - **Performance Optimization**: Increase frame rate for live recognition on high-end devices and optimize FAISS for larger datasets.
 - **Multi-User Support**: Scale the backend to handle concurrent users with session management.
